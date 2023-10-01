@@ -11,18 +11,19 @@
 
 $gbSetting = null;
 
-define('DEFAULT_MESSAGE', getMessage());
-const DEFAULT_COLOR_TYPE = 'primary';
-const DEFAULT_LAPSED_YEARS = 1;
+//$defaultMessage = getMessage();
+$defaultColorType = 'primary';
+$defaultLapsedYears = 1;
 
 function getMessage() {
+	global $defaultLapsedYears;
 	$lang = ($http_langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'])
 	? explode( ',', $http_langs )[0] : 'en';
 	if ( $lang === 'ja' ) {
-		return 'この記事は更新から'.DEFAULT_LAPSED_YEARS.'年以上経過しています。情報が古い可能性がありますのでご注意下さい。';
+		return 'この記事は更新から'.$defaultLapsedYears.'年以上経過しています。情報が古い可能性がありますのでご注意下さい。';
 	} else {
-		$plural = DEFAULT_LAPSED_YEARS > 1 ? 's' : ''; 
-		return 'This article has been over '.DEFAULT_LAPSED_YEARS.' year'.$plural.' since it was last updated. Please note that the information may be out of date.';
+		$plural = $defaultLapsedYears > 1 ? 's' : ''; 
+		return 'This article has been over '.$defaultLapsedYears.' year'.$plural.' since it was last updated. Please note that the information may be out of date.';
 	}
 }
 
@@ -39,14 +40,14 @@ function add_plugin_setting() {
 }
 
 function notifytxt_setting_htmlpage() {
-	global $gbSetting;
+	global $gbSetting, $defaultColorType, $defaultLapsedYears;
   
 	$gbSetting = get_option( 'long_unupdated_notifier_setting' );
 	if( !$gbSetting ) {
 		$gbSetting = array(
-			'message' => DEFAULT_MESSAGE,
-			'colorType' => DEFAULT_COLOR_TYPE,
-			'lapsedYears' => DEFAULT_LAPSED_YEARS,
+			'message' => getMessage(),
+			'colorType' => $defaultColorType,
+			'lapsedYears' => $defaultLapsedYears,
 		);
 		update_option( 'long_unupdated_notifier_setting', $gbSetting );
 	}
@@ -110,7 +111,7 @@ function print_sction_info() {
 
 function output_message_callback() {
 	global $gbSetting;
-	$html = '<input type="textarea" name="long_unupdated_notifier_setting[message]">'.$gbSetting['message'].'</textarea>';
+	$html = '<textarea name="long_unupdated_notifier_setting[message]" cols="50" rows="3">'.$gbSetting['message'].'</textarea>';
 	echo $html;
 }
 function output_color_style_callback() {
@@ -127,17 +128,19 @@ function output_color_style_callback() {
 		$selected = $v == $gbSetting['colorType'] ? 'selected' : '';
 		$html .= '<option value="'.$v.'" '.$selected.'>'.$l.'</option>';
 	}
-	$html = '$html = "<select name="long_unupdated_notifier_setting[colorType]">'.$html.'</select>";';
+	$html = '<select name="long_unupdated_notifier_setting[colorType]">'.$html.'</select>';
 	echo $html;
 }
 function lapsed_years_callback() {
 	global $gbSetting;
-	$html = '<input type="text" name="long_unupdated_notifier_setting[lapsedYears]" value="'.$gbSetting['lapsedYears'].'">';
+	$html = '<input type="number" name="long_unupdated_notifier_setting[lapsedYears]" value="'.$gbSetting['lapsedYears'].'" min="1" max="9">';
 	echo $html;
 }
 
 function getMessageHtml() {
-	return '<div class="alert alert-'.$gbSetting['colorType'].'" role="alert">'.$gbSetting['message'].'</div>';
+	global $defaultColorType;
+	$setting = get_option( 'long_unupdated_notifier_setting', ['colorType' => $defaultColorType, 'message' => getMessage()] );
+	return '<div class="alert alert-'.$setting['colorType'].'" role="alert">'.$setting['message'].'</div>';
 }
 
 /**
@@ -147,9 +150,10 @@ function getMessageHtml() {
   * @return string $content : 本文の内容.
   */
 function my_add_entry_content( $content ) {
-	global $post;
+	global $post, $defaultLapsedYears;
 	$modifiedDate = get_the_modified_date( 'Y-m-d', $post->ID );
-	$lapsedYear   = (string) $gbSetting['lapsedYears'];
+	$setting = get_option( 'long_unupdated_notifier_setting', ['lapsedYears' => $defaultLapsedYears] );
+	$lapsedYear = (string) $setting['lapsedYears'];
 	// 表示を改変する投稿タイプの条件分岐.
 	if ( $modifiedDate !== FALSE && strtotime( $modifiedDate ) < strtotime( '-'.$lapsedYear.' year' ) ) {
 		if ( get_post_type() === 'post' ) {
