@@ -15,6 +15,17 @@ $gbSetting = null;
 $defaultColorType = 'primary';
 $defaultLapsedYears = 1;
 
+function load_css() {
+	wp_enqueue_style( 
+		'wlun-style',
+		plugin_dir_url(__FILE__) . 'style.css',
+		array(),
+		'1.0.1' 
+	);
+}
+
+add_action('wp_enqueue_scripts', 'load_css');
+
 function getMessage() {
 	global $defaultLapsedYears;
 	$lang = ($http_langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'])
@@ -117,16 +128,21 @@ function output_message_callback() {
 function output_color_style_callback() {
 	global $gbSetting;
 	$select_tbl = array(
-		array( 'val'=>'primary', 'label'=>'primary' ),
-		array( 'val'=>'warning', 'label'=>'warning' ),
-		array( 'val'=>'danger', 'label'=>'danger' ),
+		array( 'val'=>'primary-light', 'label'=>'[Light]primary' ),
+		array( 'val'=>'info-light', 'label'=>'[Light]info' ),
+		array( 'val'=>'warning-light', 'label'=>'[Light]warning' ),
+		array( 'val'=>'danger-light', 'label'=>'[Light]danger' ),
+		array( 'val'=>'primary-dark', 'label'=>'[Dark]primary' ),
+		array( 'val'=>'info-dark', 'label'=>'[Dark]info' ),
+		array( 'val'=>'warning-dark', 'label'=>'[Dark]warning' ),
+		array( 'val'=>'danger-dark', 'label'=>'[Dark]danger' ),
 	);
 	$html = "";
 	foreach( $select_tbl as $r ) {
-		$v = $r['val'];
-		$l = $r['label'];
-		$selected = $v == $gbSetting['colorType'] ? 'selected' : '';
-		$html .= '<option value="'.$v.'" '.$selected.'>'.$l.'</option>';
+		//$v = $r['val'];
+		//$l = $r['label'];
+		$selected = $r['val'] == $gbSetting['colorType'] ? 'selected' : '';
+		$html .= '<option value="'.$r['val'].'" '.$selected.'>'.$r['label'].'</option>';
 	}
 	$html = '<select name="long_unupdated_notifier_setting[colorType]">'.$html.'</select>';
 	echo $html;
@@ -140,7 +156,7 @@ function lapsed_years_callback() {
 function getMessageHtml() {
 	global $defaultColorType;
 	$setting = get_option( 'long_unupdated_notifier_setting', ['colorType' => $defaultColorType, 'message' => getMessage()] );
-	return '<div class="alert alert-'.$setting['colorType'].'" role="alert">'.$setting['message'].'</div>';
+	return '<div class="wlun-alert wlun-alert-'.$setting['colorType'].'" role="alert">'.$setting['message'].'</div>';
 }
 
 /**
