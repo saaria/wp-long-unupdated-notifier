@@ -1,0 +1,48 @@
+.wlun-alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 0.375rem;
+    font-weight: 400;
+}
+.wlun-alert-primary-light {
+    background-color: rgb(207, 226, 255);
+    color: #052c65;
+    border-color: #9ec5fe;
+}
+.wlun-alert-info-light {
+    background-color: rgb(207, 244, 252);
+    color: #055160;
+    border-color: #9eeaf9;
+}
+.wlun-alert-warning-light {
+    background-color: rgb(255, 243, 205);
+    color: #664d03;
+    border-color: #ffe69c;
+}
+.wlun-alert-danger-light {
+    background-color: rgb(248, 215, 218);
+    color: #58151c;
+    border-color: #f1aeb5;
+}
+.wlun-alert-primary-dark {
+    background-color: rgb(3, 22, 51);
+    color: #6ea8fe;
+    border-color: #084298;
+}
+.wlun-alert-info-dark {
+    background-color: rgb(3, 40, 48);
+    color: #6edff6;
+    border-color: #087990;
+}
+.wlun-alert-warning-dark {
+    background-color: rgb(51, 39, 1);
+    color: #ffda6a;
+    border-color: #997404;
+}
+.wlun-alert-danger-dark {
+    background-color: rgb(44, 11, 14);
+    color: #ea868f;
+    border-color: #842029;
+}
