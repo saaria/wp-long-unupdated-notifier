@@ -3,7 +3,7 @@
   Plugin Name: WP Long Unupdated Notifier
   Plugin URI: https://github.com/saaria/wp-long-unupdated-notifier
   Description: The user is notified at the beginning of the article body that the content of the article is out of date.
-  Version: 1.1.0
+  Version: 1.1.1
   Author: YUKI
   Author URI: https://github.com/saaria/
   License: GPLv2
@@ -12,7 +12,7 @@
 $gbSetting = null;
 
 //$defaultMessage = getMessage();
-$defaultColorType = 'primary';
+$defaultColorType = 'primary-light';
 $defaultLapsedYears = 1;
 
 function load_css() {
